@@ -1,0 +1,31 @@
+- hosts: localhost
+  tags: provision
+  vars:
+    kvm_vm_hostname: "vm9.example.com"
+    kvm_vm_public_ip: 192.168.122.65
+    kvm_vm_root_pwd: "test123"
+    kvm_vm_base_img: openSUSE-Leap-15.4-JeOS.x86_64-15.4-OpenStack-Cloud-Build31.98.qcow2
+    kvm_vm_vcpus: "2"
+    kvm_vm_ram: "4096"
+    kvm_vm_os_disk_name: "{{ kvm_vm_hostname }}"
+    kvm_vm_os_disk_size: "10G"
+    kvm_vm_nics:
+      - name: eth1
+        bootproto: static
+        onboot: yes
+        ip: "{{ kvm_vm_public_ip }}/24"
+        prefix: "24"
+        gateway: "192.168.122.1"
+        dns_server: "192.168.122.1"
+        config: "--type network --source default --model virtio"
+  tasks:
+    - name: Create KVM VM
+      include_role:
+        name: ansible-kvm-vm
+
+- hosts: masters
+  remote_user: root
+ 
+  tasks:
+  - name: hostname
+    command: "hostnamectl set-hostname {{ kvm_vm_hostname }}"

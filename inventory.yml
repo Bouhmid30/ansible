@@ -1,0 +1,5 @@
+[masters]
+192.168.122.70  ansible_connection=ssh  ansible_user=root
+
+[workers]
+vm30.example.com
